@@ -18,6 +18,7 @@ public class cropToBinary {
     BufferedImage img4;
     BufferedImage img5;
     BufferedImage img6;
+    int t;
     
     public cropToBinary(){
         
@@ -30,6 +31,10 @@ public class cropToBinary {
         this.img4=img4;
         this.img5=img5;
         this.img6=img6;
+    }
+    
+    public void setThreshold(int t){
+        this.t=t;
     }
     
     private void grayscale(){
@@ -62,31 +67,31 @@ public class cropToBinary {
        grayscale();
        
        
-        Binary b1 = new Binary(img1);
+        Binary b1 = new Binary(img1,t);
         b1.process();
         img1=b1.getBinary();
         
-        Binary b2 = new Binary(img2);
+        Binary b2 = new Binary(img2,t);
         b2.process();
         img2=b2.getBinary();
         
         
-        Binary b3 = new Binary(img3);
+        Binary b3 = new Binary(img3,t);
         b3.process();
         img3=b3.getBinary();
         
         
-        Binary b4 = new Binary(img4);
+        Binary b4 = new Binary(img4,t);
         b4.process();
         img4=b4.getBinary();
         
         
-        Binary b5 = new Binary(img5);
+        Binary b5 = new Binary(img5,t);
         b5.process();
         img5=b5.getBinary();
         
         
-        Binary b6 = new Binary(img6);
+        Binary b6 = new Binary(img6,t);
         b6.process();
         img6=b6.getBinary();
       

@@ -14,17 +14,19 @@ import java.awt.image.BufferedImage;
  */
 public class Binary {
      BufferedImage image=null;
-    int h,w;
-    public Binary(BufferedImage gray){
+    int h,w,t;
+    public Binary(BufferedImage gray, int t){
         image=gray;
         w=image.getWidth();
         h=image.getHeight();
+        this.t=t;
     }
    
     public void process(){
         Color white = Color.WHITE;
         Color black = Color.BLACK;
-        int threshold = 100;
+        int threshold = t;
+     
         Color[][] color = new Color[w][h];
         int[][] temp = new int[w][h];
          for (int i = 0; i < w; i++) {

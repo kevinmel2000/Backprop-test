@@ -150,44 +150,14 @@ public class Backprop {
     public  void WriteWih(){
        String wihString[]= new String[ (INPUT_NEURONS+1) * HIDDEN_NEURONS];
        int count=0;
-     
 		      for (int i = 0; i < INPUT_NEURONS +1 ; i++) {
                             for (int j = 0; j < HIDDEN_NEURONS; j++) {
-                             // System.out.print(wih[i][j]+"\n");
                              wihString[count] =String.valueOf(wih[i][j]);
                              count++;
                           }
                         }
-                      
-                      //System.out.print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO \n");
-                  for (int i = 0; i < count; i++) {
-                   //System.out.print(wihString[i]+"\n");
-                     }
-                  
              File file = FileUtil.setFile("wih.txt");
              FileUtil.fileWrite(wihString, file);
-             
-             //cek isi bobot 
-             /*
-             String [] hasil = FileUtil.fileRead(file);
-             count=0;
-              for (int i = 0; i < INPUT_NEURONS +1 ; i++) {
-                for (int j = 0; j < HIDDEN_NEURONS; j++) {
-                         wih[i][j]=  Float.valueOf (hasil[count]);
-                         count++;
-                  }
-             }
-              System.out.print("HASIL DR FILE OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO \n");
-             for (int i = 0; i < INPUT_NEURONS +1 ; i++) {
-                 for (int j = 0; j < HIDDEN_NEURONS; j++) {
-                    System.out.print(wih[i][j]+"\n");
-                 }
-            
-        }*/
-              
-              
-                      
-        
     }
     
     public  void WriteWho(){

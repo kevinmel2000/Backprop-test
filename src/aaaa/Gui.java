@@ -6,13 +6,27 @@
 package aaaa;
 
 import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+import static org.opencv.imgproc.Imgproc.ADAPTIVE_THRESH_MEAN_C;
+import static org.opencv.imgproc.Imgproc.THRESH_BINARY;
 
 /**
  *
@@ -22,12 +36,20 @@ public class Gui extends javax.swing.JFrame {
 
     BufferedImage original=null;
     BufferedImage bag1,bag2,bag3,bag4,bag5,bag6;
+    BufferedImage binary=null;
      int a1=0,a2=0,a3=0,a4=0,a5=0,a6=0;
+     File imageFile=null;
     /**
      * Creates new form Gui
      */
     public Gui() {
         initComponents();
+        potong.setEnabled(false);
+        smooth.setEnabled(false);
+        binn.setEnabled(false);
+        test.setEnabled(false);
+        train.setEnabled(false);
+        jFrame1.setVisible(false);
     }
 
     /**
@@ -40,25 +62,83 @@ public class Gui extends javax.swing.JFrame {
     private void initComponents() {
 
         jFileChooser1 = new javax.swing.JFileChooser();
-        jButton1 = new javax.swing.JButton();
-        namafile = new javax.swing.JTextField();
-        ori = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        panelgambar = new javax.swing.JPanel();
+        jFrame1 = new javax.swing.JFrame();
         gambar1 = new javax.swing.JLabel();
+        biner = new javax.swing.JTextField();
         gambar2 = new javax.swing.JLabel();
         gambar3 = new javax.swing.JLabel();
         gambar4 = new javax.swing.JLabel();
         gambar5 = new javax.swing.JLabel();
         gambar6 = new javax.swing.JLabel();
-        biner = new javax.swing.JTextField();
-        cek = new javax.swing.JCheckBox();
+        jButton1 = new javax.swing.JButton();
+        namafile = new javax.swing.JTextField();
+        ori = new javax.swing.JLabel();
+        potong = new javax.swing.JButton();
+        test = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         huruf = new javax.swing.JLabel();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        smooth = new javax.swing.JButton();
+        train = new javax.swing.JButton();
+        panelcrop = new javax.swing.JButton();
+        binn = new javax.swing.JButton();
+
+        jFrame1.setSize(new java.awt.Dimension(100, 100));
+
+        gambar1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("1")));
+
+        biner.setEditable(false);
+
+        gambar2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(""), "2"));
+
+        gambar3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(""), "3"));
+
+        gambar4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(""), "4"));
+
+        gambar5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(""), "5"));
+
+        gambar6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(""), "6"));
+
+        javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
+        jFrame1.getContentPane().setLayout(jFrame1Layout);
+        jFrame1Layout.setHorizontalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jFrame1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jFrame1Layout.createSequentialGroup()
+                        .addComponent(biner)
+                        .addContainerGap())
+                    .addGroup(jFrame1Layout.createSequentialGroup()
+                        .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(gambar1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(gambar3, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(gambar5, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                        .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(gambar2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(gambar4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(gambar6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(20, 20, 20))))
+        );
+        jFrame1Layout.setVerticalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jFrame1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(gambar1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gambar2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(gambar3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gambar4, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(gambar6, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gambar5, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(biner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -73,87 +153,17 @@ public class Gui extends javax.swing.JFrame {
 
         ori.setBorder(javax.swing.BorderFactory.createTitledBorder("Gambar asli"));
 
-        jButton2.setText("Potong");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        potong.setText("Potong");
+        potong.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                potongActionPerformed(evt);
             }
         });
 
-        jButton3.setText("binary");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        test.setText("Test");
+        test.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        jButton4.setText("Test");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
-        panelgambar.setBorder(javax.swing.BorderFactory.createTitledBorder("segmentasi"));
-
-        gambar1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("1")));
-
-        gambar2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(""), "2"));
-
-        gambar3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(""), "3"));
-
-        gambar4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(""), "4"));
-
-        gambar5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(""), "5"));
-
-        gambar6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(""), "6"));
-
-        javax.swing.GroupLayout panelgambarLayout = new javax.swing.GroupLayout(panelgambar);
-        panelgambar.setLayout(panelgambarLayout);
-        panelgambarLayout.setHorizontalGroup(
-            panelgambarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelgambarLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panelgambarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(panelgambarLayout.createSequentialGroup()
-                        .addComponent(gambar1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(gambar2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panelgambarLayout.createSequentialGroup()
-                        .addComponent(gambar3, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(gambar4, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panelgambarLayout.createSequentialGroup()
-                        .addComponent(gambar5, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(gambar6, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(biner, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(29, Short.MAX_VALUE))
-        );
-        panelgambarLayout.setVerticalGroup(
-            panelgambarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelgambarLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(panelgambarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(gambar1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gambar2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panelgambarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(gambar3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gambar4, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panelgambarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(gambar6, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gambar5, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(biner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        cek.setText("check");
-        cek.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cekActionPerformed(evt);
+                testActionPerformed(evt);
             }
         });
 
@@ -164,7 +174,7 @@ public class Gui extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
+                .addContainerGap()
                 .addComponent(huruf, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -172,21 +182,35 @@ public class Gui extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(huruf, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(huruf, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton5.setText("smooth");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        smooth.setText("smooth");
+        smooth.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                smoothActionPerformed(evt);
             }
         });
 
-        jButton6.setText("Training");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        train.setText("Training");
+        train.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                trainActionPerformed(evt);
+            }
+        });
+
+        panelcrop.setText("Panel crop");
+        panelcrop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                panelcropActionPerformed(evt);
+            }
+        });
+
+        binn.setText("binary");
+        binn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                binnActionPerformed(evt);
             }
         });
 
@@ -195,33 +219,29 @@ public class Gui extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGap(10, 10, 10)
+                        .addComponent(ori, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(namafile))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 11, Short.MAX_VALUE)
-                                .addComponent(ori, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(10, 10, 10))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(cek, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButton5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(potong)
+                            .addComponent(train)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(binn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(test, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(smooth, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(20, 20, 20)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(panelgambar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(13, Short.MAX_VALUE))
+                            .addComponent(panelcrop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -231,26 +251,24 @@ public class Gui extends javax.swing.JFrame {
                     .addComponent(jButton1)
                     .addComponent(namafile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ori, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(panelgambar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(panelcrop, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(ori, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton2)
+                        .addComponent(smooth)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 5, Short.MAX_VALUE)
-                        .addComponent(cek)))
-                .addContainerGap())
+                        .addComponent(binn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(potong)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(test)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(train)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -258,7 +276,7 @@ public class Gui extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        File imageFile=null;
+        
         String fileName;
         String tipedata;
          FileNameExtensionFilter filter = new FileNameExtensionFilter("JPEG file", "jpg", "jpeg","png");
@@ -285,16 +303,21 @@ public class Gui extends javax.swing.JFrame {
             else{
                 JOptionPane.showMessageDialog(null, "Bukan File gambar dengan tipe .JPG atau .PNG" ,"ERROR ",JOptionPane.ERROR_MESSAGE); 
             }
-            
-    }           
+             //potong.setEnabled(true);
+             smooth.setEnabled(true);
+             test.setEnabled(false);
+             train.setEnabled(false);
+             binn.setEnabled(true);
+    }
+     
          
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void potongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_potongActionPerformed
         // TODO add your handling code here:
         
         Crop c = new Crop ();
-        c.setImage(original);
+        c.setImage(binary);
         c.proces();
         bag1=c.getbag1();
         bag2=c.getbag2();
@@ -310,35 +333,6 @@ public class Gui extends javax.swing.JFrame {
         ImageIcon image5 = new ImageIcon(bag5);
         ImageIcon image6 = new ImageIcon(bag6);
         
-        gambar1.setIcon(image1);
-        gambar2.setIcon(image2);
-        gambar3.setIcon(image3);
-        gambar4.setIcon(image4);
-        gambar5.setIcon(image5);
-        gambar6.setIcon(image6);
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-       
-        cropToBinary b = new cropToBinary ();
-        b.setImage(bag1, bag2, bag3, bag4, bag5, bag6);
-        b.process();
-        
-        bag1=b.getbag1();
-        bag2=b.getbag2();
-        bag3=b.getbag3();
-        bag4=b.getbag4();
-        bag5=b.getbag5();
-        bag6=b.getbag6();
-        
-        ImageIcon image1 = new ImageIcon(bag1);    
-        ImageIcon image2 = new ImageIcon(bag2);  
-        ImageIcon image3 = new ImageIcon(bag3);
-        ImageIcon image4 = new ImageIcon(bag4);
-        ImageIcon image5 = new ImageIcon(bag5);
-        ImageIcon image6 = new ImageIcon(bag6);
-        
         WriteBinary w = new WriteBinary();
         w.setImage(bag1, bag2, bag3, bag4, bag5, bag6);
         w.process();
@@ -346,9 +340,9 @@ public class Gui extends javax.swing.JFrame {
         a2=w.getbag2();
         a3=w.getbag3();
         a4=w.getbag4();
-        a5=w.getbag5();
+        a5=w.getbag5(); 
         a6=w.getbag6();
-        String bin = String.valueOf(a1) +String.valueOf(a3)+String.valueOf(a5)+String.valueOf(a2)+String.valueOf(a4)+String.valueOf(a6) ;
+        
         
         gambar1.setIcon(image1);
         gambar2.setIcon(image2);
@@ -357,10 +351,13 @@ public class Gui extends javax.swing.JFrame {
         gambar5.setIcon(image5);
         gambar6.setIcon(image6);
         
-        biner.setText(bin);
-    }//GEN-LAST:event_jButton3ActionPerformed
+        String biner1= String.valueOf(a1)+String.valueOf(a3)+String.valueOf(a5)+String.valueOf(a2)+String.valueOf(a4)+String.valueOf(a6);
+        biner.setText(biner1);
+        test.setEnabled(true);
+        
+    }//GEN-LAST:event_potongActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void testActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testActionPerformed
         // TODO add your handling code here:
         double b1,b2,b3,b4,b5,b6;
         String h ;
@@ -374,19 +371,12 @@ public class Gui extends javax.swing.JFrame {
         bin.process();
         h=bin.getHasil();
         huruf.setText(h);
-    }//GEN-LAST:event_jButton4ActionPerformed
+        
+        train.setEnabled(true);
+        
+    }//GEN-LAST:event_testActionPerformed
 
-    private void cekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cekActionPerformed
-        // TODO add your handling code here:
-        if (cek.isSelected()) {
-            panelgambar.setVisible(true);
-        }
-        else{
-            panelgambar.setVisible(false);
-        }
-    }//GEN-LAST:event_cekActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void smoothActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smoothActionPerformed
         // TODO add your handling code here:
         Noisereductor n = new Noisereductor();
         n.setImage(original);
@@ -394,13 +384,52 @@ public class Gui extends javax.swing.JFrame {
         original = n.getImage();
         ImageIcon smooth = new ImageIcon(original);
         ori.setIcon(smooth);
-    }//GEN-LAST:event_jButton5ActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_smoothActionPerformed
+
+    private void trainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trainActionPerformed
         // TODO add your handling code here:
         Backprop b = new Backprop();
         b.NeuralNetwork();
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_trainActionPerformed
+
+    private void panelcropActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_panelcropActionPerformed
+          jFrame1.setVisible(true);
+          jFrame1.setSize(215, 350);
+        
+    }//GEN-LAST:event_panelcropActionPerformed
+
+    private void binnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_binnActionPerformed
+        // TODO add your handling code here:
+        
+        
+        //opencv
+         System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
+         //File input = new File("digital_image_processing.jpg
+         byte[] data = ((DataBufferByte) original.getRaster().getDataBuffer()).getData();
+         Mat mat = new Mat(original.getHeight(), original.getWidth(), CvType.CV_8UC3);
+         mat.put(0, 0, data);
+         
+         Mat mat1 = new Mat(original.getHeight(),original.getWidth(),CvType.CV_8UC1);
+         Mat mat2= new Mat(original.getHeight(),original.getWidth(),CvType.CV_8UC1);
+         Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
+         Imgproc.adaptiveThreshold(mat1, mat2, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 15, 11);
+
+         byte[] data1 = new byte[mat2.rows() * mat2.cols() * (int)(mat2.elemSize())];
+         mat2.get(0, 0, data1);
+         BufferedImage image1 = new BufferedImage(mat2.cols(),mat2.rows(), BufferedImage.TYPE_BYTE_GRAY);
+         image1.getRaster().setDataElements(0, 0, mat2.cols(), mat2.rows(), data1);
+         binary= image1;
+         
+        ImageIcon bin = new ImageIcon(binary);
+        ori.setIcon(bin);
+        
+        try {
+            original  = ImageIO.read(imageFile);
+        } catch (Exception e){
+        }
+         potong.setEnabled(true);
+    }//GEN-LAST:event_binnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -411,22 +440,17 @@ public class Gui extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+          try {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InstantiationException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (UnsupportedLookAndFeelException ex) {
+                    Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Gui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
         //</editor-fold>
 
         /* Create and display the form */
@@ -439,7 +463,7 @@ public class Gui extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField biner;
-    private javax.swing.JCheckBox cek;
+    private javax.swing.JButton binn;
     private javax.swing.JLabel gambar1;
     private javax.swing.JLabel gambar2;
     private javax.swing.JLabel gambar3;
@@ -448,15 +472,15 @@ public class Gui extends javax.swing.JFrame {
     private javax.swing.JLabel gambar6;
     private javax.swing.JLabel huruf;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
     private javax.swing.JFileChooser jFileChooser1;
+    private javax.swing.JFrame jFrame1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField namafile;
     private javax.swing.JLabel ori;
-    private javax.swing.JPanel panelgambar;
+    private javax.swing.JButton panelcrop;
+    private javax.swing.JButton potong;
+    private javax.swing.JButton smooth;
+    private javax.swing.JButton test;
+    private javax.swing.JButton train;
     // End of variables declaration//GEN-END:variables
 }
