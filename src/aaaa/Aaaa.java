@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package aaaa;
+import java.io.File;
 import java.util.Random;
 import java.text.DecimalFormat;
 
@@ -17,15 +18,15 @@ public class Aaaa {
      * @param args the command line arguments
      */
     
-     private static final int INPUT_NEURONS = 1;
+     private static final int INPUT_NEURONS = 6;
     private static final int HIDDEN_NEURONS = 10;
-    private static final int OUTPUT_NEURONS = 4;
+    private static final int OUTPUT_NEURONS = 5;
 
-    private static final double LEARN_RATE = 0.2;    // Rho.
-    private static final double NOISE_FACTOR = 0.45;
-    private static final int TRAINING_REPS = 10000;
+    private static final double LEARN_RATE = 0.5;    // Rho.
+    private static final double NOISE_FACTOR = 2;
+    private static final int TRAINING_REPS = 1000000;
 
-    // Input to Hidden Weights (with Biases).
+    // Input to Hidden Weights (with Biases).;
     private static double wih[][] = new double[INPUT_NEURONS + 1][HIDDEN_NEURONS];
 
     // Hidden to Output Weights (with Biases).
@@ -33,6 +34,7 @@ public class Aaaa {
 
     // Activations.
     private static double inputs[] = new double[INPUT_NEURONS];
+   
     private static double hidden[] = new double[HIDDEN_NEURONS];
     private static double target[] = new double[OUTPUT_NEURONS];
     private static double actual[] = new double[OUTPUT_NEURONS];
@@ -41,21 +43,143 @@ public class Aaaa {
     private static double erro[] = new double[OUTPUT_NEURONS];
     private static double errh[] = new double[HIDDEN_NEURONS];
 
-    private static final int MAX_SAMPLES = 3;
+    private static final int MAX_SAMPLES = 26;
     
-    private static float trainInputs[][] = new float[][] {{2}, 
-                                                          {3}, 
-                                                          {4}};
+     private static double noiseInputs[][] = new double[MAX_SAMPLES][INPUT_NEURONS];
+    private static float trainInputs[][] = new float[][] {  {1,0,0,0,0,0},
+                                                            {1,1,0,0,0,0},
+                                                            {1,0,0,1,0,0},
+                                                            {1,0,0,1,1,0},
+                                                            {1,0,0,0,1,0},
+                                                            {1,1,0,1,0,0},
+                                                            {1,1,0,1,1,0},
+                                                            {1,0,0,1,1,0},
+                                                            {0,1,0,1,0,0},
+                                                            {0,1,0,1,1,0},
+                                                            {1,0,1,0,0,0},
+                                                            {1,1,1,0,0,0},
+                                                            {1,0,1,1,0,0},
+                                                            {1,0,1,1,1,0},
+                                                            {1,0,1,0,1,0},
+                                                            {1,1,1,1,0,0},
+                                                            {1,1,1,1,1,0},
+                                                            {1,1,1,0,1,0},
+                                                            {0,1,1,1,0,0},
+                                                            {0,1,1,1,1,0},
+                                                            {1,0,1,0,0,1},
+                                                            {1,1,1,0,0,1},
+                                                            {0,1,0,1,1,1},
+                                                            {1,0,1,1,0,1},
+                                                            {1,0,1,1,1,1},
+                                                            {1,0,1,0,1,1}
+                                                                };
 
     private static int trainOutput[][] = new int[][] 
-                                        {{0,0,1,0}, 
-                                         {0,0,1,1},
-                                         {0,1,0,0}
-                                        };
+                                        {{0,0,0,0,1},
+                                        {0,0,0,1,0},
+                                        {0,0,0,1,1},
+                                        {0,0,1,0,0},
+                                        {0,0,1,0,1},
+                                        {0,0,1,1,0},
+                                        {0,0,1,1,1},
+                                        {0,1,0,0,0},
+                                        {0,1,0,0,1},
+                                        {0,1,0,1,0},
+                                        {0,1,0,1,1},
+                                        {0,1,1,0,0},
+                                        {0,1,1,0,1},
+                                        {0,1,1,1,0},
+                                        {0,1,1,1,1},
+                                        {1,0,0,0,0},
+                                        {1,0,0,0,1},
+                                        {1,0,0,1,0},
+                                        {1,0,0,1,1},
+                                        {1,0,1,0,0},
+                                        {1,0,1,0,1},
+                                        {1,0,1,1,0},
+                                        {1,0,1,1,1},
+                                        {1,1,0,0,0},
+                                        {1,1,0,0,1},
+                                        {1,1,0,1,0} };
 
     private static void NeuralNetwork()
     {
-        int sample = 0;
+        
+        TrainingNeuron();
+        WriteWih();
+        WriteWho();
+        
+        //System.out.println("\nTest Jaingan syaraf tiruan dengan  input training :");
+        //testNetworkTraining();           
+        //System.out.println("\nTest Jaingan syaraf tiruan dengan  input pecahan desimal :");
+        //testNetworkWithNoise1();
+        
+        System.out.print("Training Selesai\n");
+        return;
+    }
+    
+    private static void WriteWih(){
+       String wihString[]= new String[ (INPUT_NEURONS+1) * HIDDEN_NEURONS];
+       int count=0;
+     
+		      for (int i = 0; i < INPUT_NEURONS +1 ; i++) {
+                            for (int j = 0; j < HIDDEN_NEURONS; j++) {
+                             // System.out.print(wih[i][j]+"\n");
+                             wihString[count] =String.valueOf(wih[i][j]);
+                             count++;
+                          }
+                        }
+                      
+                      //System.out.print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO \n");
+                  for (int i = 0; i < count; i++) {
+                   //System.out.print(wihString[i]+"\n");
+                     }
+                  
+             File file = FileUtil.setFile("wih.txt");
+             FileUtil.fileWrite(wihString, file);
+             
+             //cek isi bobot 
+             /*
+             String [] hasil = FileUtil.fileRead(file);
+             count=0;
+              for (int i = 0; i < INPUT_NEURONS +1 ; i++) {
+                for (int j = 0; j < HIDDEN_NEURONS; j++) {
+                         wih[i][j]=  Float.valueOf (hasil[count]);
+                         count++;
+                  }
+             }
+              System.out.print("HASIL DR FILE OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO \n");
+             for (int i = 0; i < INPUT_NEURONS +1 ; i++) {
+                 for (int j = 0; j < HIDDEN_NEURONS; j++) {
+                    System.out.print(wih[i][j]+"\n");
+                 }
+            
+        }*/
+              
+              
+                      
+        
+    }
+    
+    private static void WriteWho(){
+       String whoString[]= new String[ (HIDDEN_NEURONS+1) * OUTPUT_NEURONS];
+       int count=0;
+       //System.out.print("bobot who \n");
+		      for (int i = 0; i < HIDDEN_NEURONS +1 ; i++) {
+                            for (int j = 0; j < OUTPUT_NEURONS; j++) {
+                             // System.out.print(who[i][j]+"\n");
+                             whoString[count] = String.valueOf(who[i][j]);
+                             count++;
+                          }
+                        }
+                      
+          File file = FileUtil.setFile("who.txt");
+          FileUtil.fileWrite(whoString, file);
+    }
+    
+    private static void TrainingNeuron(){
+        System.out.print("Training....\n");
+     int sample = 0;
 
         assignRandomWeights();
 
@@ -83,15 +207,7 @@ public class Aaaa {
 
         } // epoch
 
-        getTrainingStats();
-		
-        System.out.println("\nTest Jaingan syaraf tiruan dengan  input training :");
-        testNetworkTraining();
-		
-        System.out.println("\nTest Jaingan syaraf tiruan dengan  input pecahan desimal :");
-        testNetworkWithNoise1();
-		
-        return;
+         getTrainingStats();
     }
 
     private static void getTrainingStats()
@@ -111,22 +227,33 @@ public class Aaaa {
 
             feedForward();
 
-            if(maximum(actual) == maximum(target)){
+            /*if(maximum(actual) == maximum(target)){
                 sum += 1;
             }else{
-                System.out.println(inputs[0] + "\t" + inputs[1] + "\t" + inputs[2] + "\t" + inputs[3]);
-              System.out.println(maximum(actual) + "\t" + maximum(target));
+                System.out.print(inputs[0] + "\t" + inputs[1] + "\t" + inputs[2] + "\t" + inputs[3] );
+                System.out.print(" actual: "+maximum(actual) + "\t" + "target: "+ maximum(target)+"\n");
+            }*/
+            
+            if ( pembulatan(actual[0])== pembulatan(target[0]) && pembulatan(actual[1])== pembulatan(target[1]) && pembulatan(actual[2])== pembulatan(target[2]) && pembulatan(actual[3])== pembulatan(target[3]) && pembulatan(actual[4])== pembulatan(target[4])) {
+                sum+=1;
             }
+            else{
+                  System.out.print(inputs[0] + "\t" + inputs[1] + "\t" + inputs[2] + "\t" + inputs[3] + "\t" + inputs[4] + "\t" + inputs[5] + "\t"  );
+                 System.out.print("Output yg tdk sesuai : " + pembulatan(actual[0])+","+ pembulatan(actual[1])+","+pembulatan(actual[2])+","+pembulatan(actual[3])+","+pembulatan(actual[4])+"\n");
+            }
+            
         } // i
 
         System.out.println("hasil  training benar sebanyak " + ((double)sum / (double)MAX_SAMPLES * 100.0) + "%");
 
         return;
     }
+    
+    
 
     private static void testNetworkTraining()
     {
-        // This function simply tests the training vectors against network.
+       
         for(int i = 0; i < MAX_SAMPLES; i++)
         {
             for(int j = 0; j < INPUT_NEURONS; j++)
@@ -134,14 +261,14 @@ public class Aaaa {
                 inputs[j] = trainInputs[i][j];
             } // j
             
-            feedForward();
+            feedForwardFile();
             
             for(int j = 0; j < INPUT_NEURONS; j++)
             {
                 System.out.print(inputs[j] + "\t");
             } // j
             
-            System.out.print("Output: " + pembulatan(actual[0])+","+ pembulatan(actual[1])+","+pembulatan(actual[2])+","+pembulatan(actual[3])+"\n");
+            System.out.print("Output: " + pembulatan(actual[0])+","+ pembulatan(actual[1])+","+pembulatan(actual[2])+","+pembulatan(actual[3])+","+pembulatan(actual[4])+"\n");
         } // i
         
         return;
@@ -157,16 +284,19 @@ public class Aaaa {
         {
             for(int j = 0; j < INPUT_NEURONS; j++)
             {
+               // noiseInputs[j]=(new Random().nextDouble() * NOISE_FACTOR);
                 inputs[j] = trainInputs[i][j] + (new Random().nextDouble() * NOISE_FACTOR);
+                noiseInputs[i][j]=inputs[j];
+                //System.out.print(inputs[j]);
             } // j
             
-            feedForward();
+            feedForwardFile();
             
             for(int j = 0; j < INPUT_NEURONS; j++)
             {
                 System.out.print(dfm.format(((inputs[j] * 1000.0) / 1000.0)) + "\t");
             } // j
-              System.out.print("Output: " + pembulatan(actual[0])+","+ pembulatan(actual[1])+","+pembulatan(actual[2])+","+pembulatan(actual[3])+"\n");
+              System.out.print("Output: " + pembulatan(actual[0])+","+ pembulatan(actual[1])+","+pembulatan(actual[2])+","+pembulatan(actual[3])+","+pembulatan(actual[4])+"\n");
         } // i
 
         return;
@@ -227,7 +357,73 @@ public class Aaaa {
         } // out
         return;
     }
+    
+    private static void feedForwardFile(){
+        
+        double sum = 0.0;
+        readWih();
+        readWho();
+        
+        // Calculate input to hidden layer.
+        for(int hid = 0; hid < HIDDEN_NEURONS; hid++)
+        {
+            sum = 0.0;
+            for(int inp = 0; inp < INPUT_NEURONS; inp++)
+            {
+                sum += inputs[inp] * wih[inp][hid];
+            } // inp
 
+            sum += wih[INPUT_NEURONS][hid]; // Add in bias.
+            hidden[hid] = sigmoid(sum);
+        } // hid
+
+        // Calculate the hidden to output layer.
+        for(int out = 0; out < OUTPUT_NEURONS; out++)
+        {
+            sum = 0.0;
+            for(int hid = 0; hid < HIDDEN_NEURONS; hid++)
+            {
+                sum += hidden[hid] * who[hid][out];
+            } // hid
+
+            sum += who[HIDDEN_NEURONS][out]; // Add in bias.
+            actual[out] = sigmoid(sum);
+        } // out
+        return;
+    
+    }
+    
+    private static void readWih(){
+        //cek isi bobot 
+             
+             File file = FileUtil.setFile("wih.txt");
+             String [] hasil = FileUtil.fileRead(file);
+             int count=0;
+              for (int i = 0; i < INPUT_NEURONS +1 ; i++) {
+                for (int j = 0; j < HIDDEN_NEURONS; j++) {
+                         wih[i][j]=  Float.valueOf (hasil[count]);
+                         count++;
+                  }
+             }
+              
+ 
+    }
+    
+     private static void readWho(){
+        //cek isi bobot 
+             
+             File file = FileUtil.setFile("who.txt");
+             String [] hasil = FileUtil.fileRead(file);
+             int count=0;
+              for (int i = 0; i < HIDDEN_NEURONS +1 ; i++) {
+                for (int j = 0; j < OUTPUT_NEURONS; j++) {
+                         who[i][j]=  Float.valueOf (hasil[count]);
+                         count++;
+                  }
+             }
+             
+    }
+    
     private static void backPropagate()
     {
         // Calculate the output layer error (step 3 for output cell).
@@ -303,7 +499,10 @@ public class Aaaa {
 
     public static void main(String[] args) {
         // TODO code application logic here
-        NeuralNetwork();
+        //NeuralNetwork();
+        //testNetworkWithNoise1();
+       //testNetworkTraining();
+      
         return;
 
     }
