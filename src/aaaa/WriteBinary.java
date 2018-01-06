@@ -64,11 +64,15 @@ public class WriteBinary {
        return count++;
     }
     
-    private int  minimum(int count, int avg){
-       
+    private int  minimum(int count, int avg,int min){
+         
+        avg= avg-min;
         
         if (count>avg) {
             count=1;
+        }
+        else if (count==0 || count<=3) {
+            count=0;
         }
         else{
             count=0;
@@ -76,7 +80,19 @@ public class WriteBinary {
         return count;
     }
    
+    private int getMin(int[] val){
+        int possibleMin=val[0];
+        for (int i = 0; i < 6; i++) {
+            if (possibleMin>=val[i]) {
+                possibleMin=val[i];
+            }
+        }
+       return possibleMin;
+    }
+    
     public void process(){
+        int min;
+        int[] val = new int[6];
          
         bag1=countBlack(img1);
         bag2=countBlack(img2);        
@@ -85,15 +101,34 @@ public class WriteBinary {
         bag5=countBlack(img5); 
         bag6=countBlack(img6);
         
+        val[0]=bag1;
+        val[1]=bag2;
+        val[2]=bag3;
+        val[3]=bag4;
+        val[4]=bag5;
+        val[5]=bag6;
+        
+        min=getMin(val);
+        
         int avg = (bag1+bag2+bag3+bag4+bag5+bag6)/6;
+        System.out.print("min: "+min);
+        System.out.print("avg: "+avg);
+        
+        System.out.print(" 1:"+bag1);
+        System.out.print(" 2:"+bag2);
+        System.out.print(" 3:"+bag3);
+        System.out.print(" 4:"+bag4);
+        System.out.print(" 5:"+bag5);
+        System.out.print(" 6:"+bag6);
+        
+        bag1=minimum(bag1,avg,min);
+        bag2=minimum(bag2,avg,min);
+        bag3=minimum(bag3,avg,min);
+        bag4=minimum(bag4,avg,min);
+        bag5=minimum(bag5,avg,min);
+        bag6=minimum(bag6,avg,min);
         
         
-        bag1=minimum(bag1,avg);
-        bag2=minimum(bag2,avg);
-        bag3=minimum(bag3,avg);
-        bag4=minimum(bag4,avg);
-        bag5=minimum(bag5,avg);
-        bag6=minimum(bag6,avg);
         
         
         

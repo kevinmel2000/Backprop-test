@@ -26,8 +26,8 @@ public class Backprop {
     public final   int OUTPUT_NEURONS = 5;
 
     public final   double LEARN_RATE = 0.5;    // Rho.
-    public final   double NOISE_FACTOR = 0.5;
-    public final   int TRAINING_REPS = 1000000;
+    public final   double NOISE_FACTOR = 0.2;
+    public final   int TRAINING_REPS = 10000000;
 
     // Input to Hidden Weights (with Biases).;
     public final  double wih[][] = new double[INPUT_NEURONS + 1][HIDDEN_NEURONS];
