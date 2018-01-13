@@ -24,6 +24,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import static org.opencv.imgproc.Imgproc.ADAPTIVE_THRESH_MEAN_C;
 import static org.opencv.imgproc.Imgproc.THRESH_BINARY;
@@ -46,7 +47,6 @@ public class Gui extends javax.swing.JFrame {
         initComponents();
         potong.setEnabled(false);
         smooth.setEnabled(false);
-        binn.setEnabled(false);
         test.setEnabled(false);
         train.setEnabled(false);
         jFrame1.setVisible(false);
@@ -80,7 +80,6 @@ public class Gui extends javax.swing.JFrame {
         smooth = new javax.swing.JButton();
         train = new javax.swing.JButton();
         panelcrop = new javax.swing.JButton();
-        binn = new javax.swing.JButton();
 
         jFrame1.setSize(new java.awt.Dimension(100, 100));
 
@@ -186,7 +185,7 @@ public class Gui extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        smooth.setText("smooth");
+        smooth.setText("Preprocess");
         smooth.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 smoothActionPerformed(evt);
@@ -207,35 +206,24 @@ public class Gui extends javax.swing.JFrame {
             }
         });
 
-        binn.setText("binary");
-        binn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                binnActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(ori, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(ori, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(namafile))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(potong)
-                            .addComponent(train)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(binn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(test, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(smooth, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(test, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(smooth, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(potong, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(train, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(20, 20, 20)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(panelcrop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -257,18 +245,17 @@ public class Gui extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(panelcrop, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(panelcrop, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(25, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(smooth)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(binn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(potong)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(test)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(train)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(potong)
+                        .addGap(13, 13, 13)
+                        .addComponent(test)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(train)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
 
         pack();
@@ -307,7 +294,7 @@ public class Gui extends javax.swing.JFrame {
              smooth.setEnabled(true);
              test.setEnabled(false);
              train.setEnabled(false);
-             binn.setEnabled(true);
+           
     }
      
          
@@ -378,13 +365,44 @@ public class Gui extends javax.swing.JFrame {
 
     private void smoothActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_smoothActionPerformed
         // TODO add your handling code here:
-        Noisereductor n = new Noisereductor();
-        n.setImage(original);
-        n.medianFilter(5, 5);
-        original = n.getImage();
+        
+        
+        /*Noisereductor n = new Noisereductor();
+        
+        for (int i = 0; i < 5; i++) {
+             n.setImage(original);
+             n.medianFilter(7, 7);
+             original = n.getImage();
+        }
+       */
+        
+       
+         System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
+         //File input = new File("digital_image_processing.jpg
+         byte[] data = ((DataBufferByte) original.getRaster().getDataBuffer()).getData();
+         Mat mat = new Mat(original.getHeight(), original.getWidth(), CvType.CV_8UC3);
+         mat.put(0, 0, data);
+         
+         Mat mat1 = new Mat(original.getHeight(),original.getWidth(),CvType.CV_8UC1);
+         Mat mat2= new Mat(original.getHeight(),original.getWidth(),CvType.CV_8UC1);
+         Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
+         //Imgproc.adaptiveThreshold(mat1, mat2, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 15, 11);
+         
+         Imgproc.blur(mat1, mat2, new Size(11.0, 11.0));
+         Imgproc.adaptiveThreshold(mat2, mat1, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 15, 11);
+         
+         byte[] data1 = new byte[mat1.rows() * mat1.cols() * (int)(mat1.elemSize())];
+         mat1.get(0, 0, data1);
+         BufferedImage image1 = new BufferedImage(mat1.cols(),mat1.rows(), BufferedImage.TYPE_BYTE_GRAY);
+         image1.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
+         original= image1;
+        
         ImageIcon smooth = new ImageIcon(original);
         ori.setIcon(smooth);
-
+        
+        binary = original;
+        
+         potong.setEnabled(true);
     }//GEN-LAST:event_smoothActionPerformed
 
     private void trainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trainActionPerformed
@@ -398,38 +416,6 @@ public class Gui extends javax.swing.JFrame {
           jFrame1.setSize(215, 350);
         
     }//GEN-LAST:event_panelcropActionPerformed
-
-    private void binnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_binnActionPerformed
-        // TODO add your handling code here:
-        
-        
-        //opencv
-         System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
-         //File input = new File("digital_image_processing.jpg
-         byte[] data = ((DataBufferByte) original.getRaster().getDataBuffer()).getData();
-         Mat mat = new Mat(original.getHeight(), original.getWidth(), CvType.CV_8UC3);
-         mat.put(0, 0, data);
-         
-         Mat mat1 = new Mat(original.getHeight(),original.getWidth(),CvType.CV_8UC1);
-         Mat mat2= new Mat(original.getHeight(),original.getWidth(),CvType.CV_8UC1);
-         Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
-         Imgproc.adaptiveThreshold(mat1, mat2, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 15, 11);
-
-         byte[] data1 = new byte[mat2.rows() * mat2.cols() * (int)(mat2.elemSize())];
-         mat2.get(0, 0, data1);
-         BufferedImage image1 = new BufferedImage(mat2.cols(),mat2.rows(), BufferedImage.TYPE_BYTE_GRAY);
-         image1.getRaster().setDataElements(0, 0, mat2.cols(), mat2.rows(), data1);
-         binary= image1;
-         
-        ImageIcon bin = new ImageIcon(binary);
-        ori.setIcon(bin);
-        
-        try {
-            original  = ImageIO.read(imageFile);
-        } catch (Exception e){
-        }
-         potong.setEnabled(true);
-    }//GEN-LAST:event_binnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -463,7 +449,6 @@ public class Gui extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField biner;
-    private javax.swing.JButton binn;
     private javax.swing.JLabel gambar1;
     private javax.swing.JLabel gambar2;
     private javax.swing.JLabel gambar3;
