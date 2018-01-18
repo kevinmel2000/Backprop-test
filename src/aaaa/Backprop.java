@@ -22,12 +22,12 @@ public class Backprop {
     }
     
     public final   int INPUT_NEURONS = 6;
-    public final   int HIDDEN_NEURONS = 10;
+    public final   int HIDDEN_NEURONS = 20;
     public final   int OUTPUT_NEURONS = 5;
 
-    public final   double LEARN_RATE = 0.5;    // Rho.
+    public final   double LEARN_RATE = 0.3;    // Rho.
     public final   double NOISE_FACTOR = 0.2;
-    public final   int TRAINING_REPS = 90000000;
+    public final   int TRAINING_REPS = 100000;
 
     // Input to Hidden Weights (with Biases).;
     public final  double wih[][] = new double[INPUT_NEURONS + 1][HIDDEN_NEURONS];
@@ -185,6 +185,7 @@ public class Backprop {
 
         for(int epoch = 0; epoch < TRAINING_REPS; epoch++)
         {
+           // System.out.print("iterasi ke: " +epoch+" \n");
             sample += 1;
             if(sample == MAX_SAMPLES){
                 sample = 0;

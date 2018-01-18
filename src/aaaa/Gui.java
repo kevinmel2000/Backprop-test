@@ -48,7 +48,7 @@ public class Gui extends javax.swing.JFrame {
         potong.setEnabled(false);
         smooth.setEnabled(false);
         test.setEnabled(false);
-        train.setEnabled(false);
+        train.setEnabled(true);
         jFrame1.setVisible(false);
     }
 
